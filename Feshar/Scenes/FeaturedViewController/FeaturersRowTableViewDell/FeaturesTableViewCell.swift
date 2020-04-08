@@ -45,7 +45,19 @@ extension FeaturesTableViewCell: UICollectionViewDelegate, UICollectionViewDataS
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FeatureCollectionCell", for: indexPath) as! FeatureCollectionCell
-        cell.moviePosterImage.image = movies[indexPath.item].mainPoster
+        
+        if let imageURL = URL(string: BaseURLs.baseImageUrl+movies[indexPath.item].mainPoster!) {
+            DispatchQueue.global().async {
+                let imageData = try? Data(contentsOf: imageURL)
+                if let data = imageData {
+                    let image = UIImage(data: data)
+                    DispatchQueue.main.async {
+                        cell.moviePosterImage.image = image
+                    }
+                }
+            }
+        }
+//        cell.moviePosterImage.image = movies[indexPath.item].mainPoster
         return cell
     }
     

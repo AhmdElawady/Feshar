@@ -20,6 +20,7 @@ class LogInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpLoginVC()
+        
     }
     
     @IBAction func loginButtonPressed(_ sender: Any) {

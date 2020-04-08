@@ -27,10 +27,10 @@ class WatchlistViewCell: UITableViewCell {
     }
     
     func configCell(data: MovieModel) {
-        moviePosterImage.image = data.mainPoster
+      //  moviePosterImage.image = data.mainPoster    <<<<<<<< ADJUST
         movieNameLabel.text = data.name
         movieIMDBRate.text = String(format: "%.1f", data.IMDBRate!)
-        movieGenreLabel.text = data.genre
+    //     movieGenreLabel.text = data.genre   <<<<<<<<< ADJUST
     }
     
 }

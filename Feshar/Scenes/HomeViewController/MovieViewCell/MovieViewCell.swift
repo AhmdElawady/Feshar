@@ -28,9 +28,7 @@ class MovieViewCell: UITableViewCell {
         moviePosterImage.layer.cornerRadius = 10
         moviePosterImage.layer.masksToBounds = true
         moviePosterImage.clipsToBounds = true
-        
         movieBackgroundView.layer.shadowColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-        movieBackgroundView.layer.shadowOffset = CGSize(width: 0, height: 0)
         movieBackgroundView.layer.shadowRadius = 8
         movieBackgroundView.layer.shadowOpacity = 0.5
     }
@@ -41,11 +39,21 @@ class MovieViewCell: UITableViewCell {
     }
     
     func configData(data: MovieModel) {
-        moviePosterImage.image = data.mainPoster
+        if let imageURL = URL(string: BaseURLs.baseImageUrl+data.mainPoster!) {
+            DispatchQueue.global().async {
+                let imageData = try? Data(contentsOf: imageURL)
+                if let data = imageData {
+                    let image = UIImage(data: data)
+                    DispatchQueue.main.async {
+                         self.moviePosterImage.image = image
+                    }
+                }
+            }
+        }
+        
         movieNameLabel.text = data.name
-        movieTypeLabel.text = data.genre
+        movieTypeLabel.text = data.name       // <<<<<< ADJUST FOR GENRE
         IMDBRateLabel.text = String(data.IMDBRate ?? 0)
         describtionLabel.text = data.Description
     }
-    
 }

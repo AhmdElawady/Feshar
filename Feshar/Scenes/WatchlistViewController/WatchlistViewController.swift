@@ -12,7 +12,10 @@ class WatchlistViewController: UIViewController {
 
     @IBOutlet weak var watchlistTableView: UITableView!
     
-    var favorateMovies = allMovies.filter{$0.isFavorite == true}
+    
+    var favorateMovies = [MovieModel]()
+    
+ //   var favorateMovies = allMovies.filter{$0.isFavorite == true}  //<<<<<< ADJUST
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,9 +49,9 @@ extension WatchlistViewController: UITableViewDelegate, UITableViewDataSource {
     
     // Swipe To Delete Setup
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let movie = allMovies[indexPath.row]
+        let movie = favorateMovies[indexPath.row]   // <<<<<<<<< ADJUST
         let delete = UIContextualAction(style: .destructive, title: "Delete") { (action, sourceView, completionHandler) in
-            movie.isFavorite = false
+       //     movie.isFavorite = false
             self.favorateMovies.remove(at: indexPath.row)
             self.watchlistTableView.deleteRows(at: [indexPath], with: .automatic)
             tableView.reloadData()

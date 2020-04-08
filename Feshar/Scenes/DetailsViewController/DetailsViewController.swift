@@ -26,42 +26,48 @@ class DetailsViewController: UIViewController {
         setUpNavigationBar()
         setupDetailsVCContent()
         registerScrollable()
-        setupAddWatchlistBtn()
+        print(movie)
+    //    setupAddWatchlistBtn()
     }
     
 // MARK: Setup Details ViewController
     func setupDetailsVCContent() {
         movieNameLabel.text = movie.name
-        movieGenreLabel.text = movie.genre
+    //    movieGenreLabel.text = movie.genre       // <<<<<< ADJUST
         movieIMDBLabel.text = String(movie.IMDBRate ?? 0)
         describtionLabel.text = movie.Description
-        posters = movie.posters ?? [UIImage(contentsOfFile: "logoP")!]
-        posters.insert(movie.mainPoster ?? UIImage(named: "logoP")!, at: 0)
+      //  posters = movie.posters ?? [UIImage(contentsOfFile: "logoP")!]  // <<<<<< ADJUST
+     //   posters.insert(movie.mainPoster ?? UIImage(named: "logoP")!, at: 0)   // <<<<<< ADJUST
+        
     }
     
-    func setupAddWatchlistBtn() {
-        addWishListButton.setupButtonView()
-        if movie.isFavorite {   //- if turned favorite from Home TableViewCell
-            addWishListButton.layer.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
-            addWishListButton.tintColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-            addWishListButton.layer.shadowColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
-            addWishListButton.setTitle("ALREADY IN WATCHLIST", for: .normal)
-        }
-    }
+    // <<<<<< ADJUST
     
-    @IBAction func addWishListButtonPressed(_ sender: Any) {
-        if movie.isFavorite == false {
-            addWishListButton.layer.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
-            addWishListButton.tintColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-            addWishListButton.layer.shadowColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
-            addWishListButton.setTitle("ADDED", for: .normal)
-            movie.isFavorite = true
-        } else {
-            addWishListButton.setupButtonView()
-            addWishListButton.setTitle("ADD TO WATCHLIST", for: .normal)
-            movie.isFavorite = false
-        }
-    }
+//    func setupAddWatchlistBtn() {
+//        addWishListButton.setupButtonView()
+//        if movie.isFavorite {   //- if turned favorite from Home TableViewCell
+//            addWishListButton.layer.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+//            addWishListButton.tintColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+//            addWishListButton.layer.shadowColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+//            addWishListButton.setTitle("ALREADY IN WATCHLIST", for: .normal)
+//        }
+//    }
+    
+    // <<<<<< ADJUST
+    
+//    @IBAction func addWishListButtonPressed(_ sender: Any) {
+//        if movie.isFavorite == false {
+//            addWishListButton.layer.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+//            addWishListButton.tintColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+//            addWishListButton.layer.shadowColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+//            addWishListButton.setTitle("ADDED", for: .normal)
+//            movie.isFavorite = true
+//        } else {
+//            addWishListButton.setupButtonView()
+//            addWishListButton.setTitle("ADD TO WATCHLIST", for: .normal)
+//            movie.isFavorite = false
+//        }
+//    }
     
     func registerScrollable() {
         let CastViewCell = UINib(nibName: "CastViewCell", bundle: nil)
@@ -79,6 +85,21 @@ extension DetailsViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PosterImageCollectionViewCell", for: indexPath) as! PosterImageCollectionViewCell
+        
+        if let imageURL = URL(string: BaseURLs.baseImageUrl+movie.mainPoster!) {
+            print(imageURL)
+            DispatchQueue.global().async {
+                let imageData = try? Data(contentsOf: imageURL)
+                if let data = imageData {
+                    let image = UIImage(data: data)
+                    DispatchQueue.main.async {
+                        self.posters.append(image!)
+                        print(self.posters)
+                    }
+                }
+            }
+        }
+        
         cell.image = posters[indexPath.item]
         return cell
     }
@@ -86,6 +107,7 @@ extension DetailsViewController: UICollectionViewDataSource {
 
 // MARK: Posters Collection FlowLayout
 extension DetailsViewController: UICollectionViewDelegateFlowLayout {
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 330, height: collectionView.frame.size.height)
     }
