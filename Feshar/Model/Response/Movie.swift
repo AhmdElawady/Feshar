@@ -7,19 +7,13 @@
 //
 
 import Foundation
-import UIKit
 
-struct HomeModel: Codable {
-    let page: Int
-    let results: [MovieModel]
-}
-
-struct MovieModel: Codable {
-    var id: Int?
-    var name: String?
-    var mainPoster: String?
-    var IMDBRate: Double?
-    var Description: String?
+struct Movie: Codable {
+    let id: Int
+    let name: String
+    let mainPoster: String
+    let IMDBRate: Double
+    let Description: String
     
     enum CodingKeys: String, CodingKey {
         case id = "id"

@@ -14,9 +14,6 @@ class LogInViewController: UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var logInButton: UIButton!
     
-    private let staticUsername = "Robusta"
-    private let staticPassword = "Robusta.123"
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpLoginVC()
@@ -44,6 +41,7 @@ class LogInViewController: UIViewController {
     
     func handleSessionResponse(success: Bool, error: Error?) {
         if success {
+            print(Client.Auth.sessionId)
             DispatchQueue.main.async {
                 let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
                 if let welcomeScreen = mainStoryboard.instantiateViewController(withIdentifier: "LoggedInViewController") as? LoggedInViewController {
@@ -55,22 +53,22 @@ class LogInViewController: UIViewController {
         }
     }
     
-    func loginValidation()  {
-        guard let username = usernameTextField.text else {return}
-        guard let password = passwordTextField.text else {return}
-        if username.isEmpty || password.isEmpty {
-            ShowAlert.basic(title: "Incomplete Form", message: "Please fillout all fields", vc: self)
-            return }
-        if password.count < 8 {
-            ShowAlert.basic(title: "Short Password", message: "Password should be at least 8 character", vc: self)
-            passwordTextField.text = ""
-            return }
-        if username != staticUsername || password != staticPassword {
-            ShowAlert.basic(title: "Unable To Login", message: "Incorrect Username or Password", vc: self)
-            usernameTextField.text = ""
-            passwordTextField.text = ""
-            return }
-    }
+//    func loginValidation()  {
+//        guard let username = usernameTextField.text else {return}
+//        guard let password = passwordTextField.text else {return}
+//        if username.isEmpty || password.isEmpty {
+//            ShowAlert.basic(title: "Incomplete Form", message: "Please fillout all fields", vc: self)
+//            return }
+//        if password.count < 8 {
+//            ShowAlert.basic(title: "Short Password", message: "Password should be at least 8 character", vc: self)
+//            passwordTextField.text = ""
+//            return }
+//        if username != staticUsername || password != staticPassword {
+//            ShowAlert.basic(title: "Unable To Login", message: "Incorrect Username or Password", vc: self)
+//            usernameTextField.text = ""
+//            passwordTextField.text = ""
+//            return }
+//    }
     
     func setUpLoginVC() {
         logInButton.setupButtonView()

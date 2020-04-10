@@ -146,19 +146,19 @@ extension HomeViewController: UITableViewDelegate {
 //        return swipeActionConfig
 //    }
     // Setup Leading Swipe Action
-    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let action = UIContextualAction(style: .normal, title: "Share") { (action, sourceView, completionHandler) in
-            let item = self.allMovies[indexPath.row]  // SELECTEDCell
-            let items: [Any] = [item.name!, item.mainPoster!]
-            let activityViewController = UIActivityViewController(activityItems: items, applicationActivities: nil)
-        self.present(activityViewController, animated: true)
-        }
-        action.image = UIImage(systemName: "paperplane.fill")
-        action.backgroundColor = .purple
-        let swipeActionConfig = UISwipeActionsConfiguration(actions: [action])
-        swipeActionConfig.performsFirstActionWithFullSwipe = false
-        return swipeActionConfig
-    }
+//    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+//        let action = UIContextualAction(style: .normal, title: "Share") { (action, sourceView, completionHandler) in
+//            let item = self.allMovies[indexPath.row]  // SELECTEDCell
+//            let items: [Any] = [item.name!, item.mainPoster!]
+//            let activityViewController = UIActivityViewController(activityItems: items, applicationActivities: nil)
+//        self.present(activityViewController, animated: true)
+//        }
+//        action.image = UIImage(systemName: "paperplane.fill")
+//        action.backgroundColor = .purple
+//        let swipeActionConfig = UISwipeActionsConfiguration(actions: [action])
+//        swipeActionConfig.performsFirstActionWithFullSwipe = false
+//        return swipeActionConfig
+//    }
 }
 
 // MARK: Home DataSource

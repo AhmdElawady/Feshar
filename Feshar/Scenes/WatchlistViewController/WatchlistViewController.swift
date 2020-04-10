@@ -23,23 +23,33 @@ class WatchlistViewController: UIViewController {
         setupTitleNavItem()
         registerWatchlistTableView()
         watchlistTableView.separatorStyle = .none
+        fetchWatchList()
     }
     
     func registerWatchlistTableView() {
         let watchlistCellNib = UINib(nibName: "WatchlistViewCell", bundle: nil)
         watchlistTableView.register(watchlistCellNib, forCellReuseIdentifier: "WatchlistViewCell")
     }
+    
+    func fetchWatchList() {
+        WatchList.getWatchList { (movie, error) in
+            MovieModel.watchList = movie
+            DispatchQueue.main.async {
+                self.watchlistTableView.reloadData()
+            }
+        }
+    }
 }
 
 // MARK: Watchlist TableView Setup
 extension WatchlistViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        favorateMovies.count
+        MovieModel.watchList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "WatchlistViewCell", for: indexPath) as! WatchlistViewCell
-        cell.configCell(data: favorateMovies[indexPath.row])
+        cell.configCell(data: MovieModel.watchList[indexPath.row])
         return cell
     }
     
@@ -49,10 +59,10 @@ extension WatchlistViewController: UITableViewDelegate, UITableViewDataSource {
     
     // Swipe To Delete Setup
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let movie = favorateMovies[indexPath.row]   // <<<<<<<<< ADJUST
+        let movie = MovieModel.watchList[indexPath.row]   // <<<<<<<<< ADJUST
         let delete = UIContextualAction(style: .destructive, title: "Delete") { (action, sourceView, completionHandler) in
        //     movie.isFavorite = false
-            self.favorateMovies.remove(at: indexPath.row)
+            MovieModel.watchList.remove(at: indexPath.row)
             self.watchlistTableView.deleteRows(at: [indexPath], with: .automatic)
             tableView.reloadData()
             completionHandler(true)

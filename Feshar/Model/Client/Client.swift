@@ -17,6 +17,7 @@ class Client {
         static var accountId = 0
         static var requestToken = ""
         static var sessionId = ""
+        static var page = 1
     }
     
     enum EndPoints {
@@ -43,16 +44,16 @@ class Client {
                 EndPoints.baseUrl + "/authentication/session/new" + EndPoints.apiKeyParam
                 
             case .getHomeMovies: return
-                EndPoints.baseUrl + "/acount/\(Auth.accountId)/watchlist/movies" + EndPoints.apiKeyParam + "&session_id=\(Auth.sessionId)"
+                EndPoints.baseUrl + "/account/\(Auth.accountId)/watchlist/movies" + EndPoints.apiKeyParam + "&session_id=\(Auth.sessionId)"
                 
             case .getDetailsMovie: return
-                EndPoints.baseUrl + "/acount/\(Auth.accountId)/watchlist/movies" + EndPoints.apiKeyParam + "&session_id=\(Auth.sessionId)"
+                EndPoints.baseUrl + "/account/\(Auth.accountId)/watchlist/movies" + EndPoints.apiKeyParam + "&session_id=\(Auth.sessionId)"
                 
             case .getWatchList: return
-                EndPoints.baseUrl + "/acount/\(Auth.accountId)/watchlist/movies" + EndPoints.apiKeyParam + "&session_id=\(Auth.sessionId)"
+                EndPoints.baseUrl + "/account/\(Auth.accountId)/watchlist/movies" + EndPoints.apiKeyParam + "&session_id=\(Auth.sessionId)" + "&page=\(Auth.page)"
                 
             case .getFeaturedMovies: return
-                EndPoints.baseUrl + "/acount/\(Auth.accountId)/watchlist/movies" + EndPoints.apiKeyParam + "&session_id=\(Auth.sessionId)"
+                EndPoints.baseUrl + "/account/\(Auth.accountId)/watchlist/movies" + EndPoints.apiKeyParam + "&session_id=\(Auth.sessionId)"
             }
         }
         

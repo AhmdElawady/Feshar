@@ -26,11 +26,11 @@ class WatchlistViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
-    func configCell(data: MovieModel) {
-      //  moviePosterImage.image = data.mainPoster    <<<<<<<< ADJUST
+    func configCell(data: Movie) {
+ //       moviePosterImage.image = data.mainPoster    //<<<<<<<< ADJUST
         movieNameLabel.text = data.name
-        movieIMDBRate.text = String(format: "%.1f", data.IMDBRate!)
-    //     movieGenreLabel.text = data.genre   <<<<<<<<< ADJUST
+        movieIMDBRate.text = String(format: "%.1f", data.IMDBRate)
+ //       movieGenreLabel.text = data.genre   //<<<<<<<<< ADJUST
     }
     
 }

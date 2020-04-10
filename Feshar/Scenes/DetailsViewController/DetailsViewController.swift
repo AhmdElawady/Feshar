@@ -33,10 +33,10 @@ class DetailsViewController: UIViewController {
     
 // MARK: Setup Details ViewController
     func setupDetailsVCContent() {
-        movieNameLabel.text = movie.name
+//        movieNameLabel.text = movie.name
     //    movieGenreLabel.text = movie.genre       // <<<<<< ADJUST
-        movieIMDBLabel.text = String(movie.IMDBRate ?? 0)
-        describtionLabel.text = movie.Description
+//        movieIMDBLabel.text = String(movie.IMDBRate ?? 0)
+//        describtionLabel.text = movie.Description
       //  posters = movie.posters ?? [UIImage(contentsOfFile: "logoP")!]  // <<<<<< ADJUST
      //   posters.insert(movie.mainPoster ?? UIImage(named: "logoP")!, at: 0)   // <<<<<< ADJUST
         
