@@ -18,7 +18,6 @@ struct MovieModel: Codable {
     var id: Int?
     var name: String?
     var mainPoster: String?
-//    var genre: String?
     var IMDBRate: Double?
     var Description: String?
     

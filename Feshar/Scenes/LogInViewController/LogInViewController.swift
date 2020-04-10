@@ -24,13 +24,35 @@ class LogInViewController: UIViewController {
     }
     
     @IBAction func loginButtonPressed(_ sender: Any) {
-        loginValidation()
-        let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-            if let welcomeScreen = mainStoryboard.instantiateViewController(withIdentifier: "LoggedInViewController") as? LoggedInViewController {
-                welcomeScreen.username = staticUsername
-                welcomeScreen.modalTransitionStyle = .partialCurl
-                self.navigationController?.pushViewController(welcomeScreen, animated: true)
+//        loginValidation()
+        Token.getToken(completion: handleRequestTokenResponse(success:error:))
+    }
+    
+    func handleRequestTokenResponse(success: Bool, error: Error?) {
+        if success {
+            DispatchQueue.main.async {
+                LoginUser.login(username: self.usernameTextField.text ?? "", password: self.passwordTextField.text ?? "", completion: self.handleLoginResponse(success:error:))
             }
+        }
+    }
+    
+    func handleLoginResponse(success: Bool, error: Error?) {
+        if success {
+            SessionId.getSessionId(completion: handleSessionResponse(success:error:))
+        }
+    }
+    
+    func handleSessionResponse(success: Bool, error: Error?) {
+        if success {
+            DispatchQueue.main.async {
+                let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+                if let welcomeScreen = mainStoryboard.instantiateViewController(withIdentifier: "LoggedInViewController") as? LoggedInViewController {
+                    welcomeScreen.username = self.usernameTextField.text!.capitalized
+                    welcomeScreen.modalTransitionStyle = .partialCurl
+                    self.navigationController?.pushViewController(welcomeScreen, animated: true)
+                }
+            }
+        }
     }
     
     func loginValidation()  {

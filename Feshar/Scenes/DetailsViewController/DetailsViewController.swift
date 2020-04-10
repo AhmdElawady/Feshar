@@ -26,7 +26,8 @@ class DetailsViewController: UIViewController {
         setUpNavigationBar()
         setupDetailsVCContent()
         registerScrollable()
-        print(movie)
+        self.posterimageCollectionView.reloadData()
+       // updateCollectionView()
     //    setupAddWatchlistBtn()
     }
     
@@ -40,6 +41,23 @@ class DetailsViewController: UIViewController {
      //   posters.insert(movie.mainPoster ?? UIImage(named: "logoP")!, at: 0)   // <<<<<< ADJUST
         
     }
+    // TODO: Try to use guard let
+//    func updateCollectionView() {
+//        if let imageURL = URL(string: BaseURLs.baseImageUrl+movie.mainPoster!) {
+//            print("here is imageURL:", imageURL)
+//            DispatchQueue.global().async {
+//                let imageData = try? Data(contentsOf: imageURL)
+//                if let data = imageData {
+//                    let image = UIImage(data: data)
+//                    DispatchQueue.main.async {
+//                        self.posters.append(image!)
+//                        self.posterimageCollectionView.reloadData()
+//                        print(self.posters)
+//                    }
+//                }
+//            }
+//        }
+//    }
     
     // <<<<<< ADJUST
     
@@ -86,19 +104,7 @@ extension DetailsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PosterImageCollectionViewCell", for: indexPath) as! PosterImageCollectionViewCell
         
-        if let imageURL = URL(string: BaseURLs.baseImageUrl+movie.mainPoster!) {
-            print(imageURL)
-            DispatchQueue.global().async {
-                let imageData = try? Data(contentsOf: imageURL)
-                if let data = imageData {
-                    let image = UIImage(data: data)
-                    DispatchQueue.main.async {
-                        self.posters.append(image!)
-                        print(self.posters)
-                    }
-                }
-            }
-        }
+        
         
         cell.image = posters[indexPath.item]
         return cell

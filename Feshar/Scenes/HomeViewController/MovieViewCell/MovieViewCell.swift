@@ -39,21 +39,21 @@ class MovieViewCell: UITableViewCell {
     }
     
     func configData(data: MovieModel) {
-        if let imageURL = URL(string: BaseURLs.baseImageUrl+data.mainPoster!) {
-            DispatchQueue.global().async {
-                let imageData = try? Data(contentsOf: imageURL)
-                if let data = imageData {
-                    let image = UIImage(data: data)
-                    DispatchQueue.main.async {
-                         self.moviePosterImage.image = image
-                    }
-                }
-            }
-        }
-        
-        movieNameLabel.text = data.name
-        movieTypeLabel.text = data.name       // <<<<<< ADJUST FOR GENRE
-        IMDBRateLabel.text = String(data.IMDBRate ?? 0)
-        describtionLabel.text = data.Description
+//        if let imageURL = URL(string: BaseURLs.baseImageUrl+data.mainPoster!) {
+//            DispatchQueue.global().async {
+//                let imageData = try? Data(contentsOf: imageURL)
+//                if let data = imageData {
+//                    let image = UIImage(data: data)
+//                    DispatchQueue.main.async {
+//                         self.moviePosterImage.image = image
+//                    }
+//                }
+//            }
+//        }
+//
+//        movieNameLabel.text = data.name
+//        movieTypeLabel.text = data.name       // <<<<<< ADJUST FOR GENRE
+//        IMDBRateLabel.text = String(data.IMDBRate ?? 0)
+//        describtionLabel.text = data.Description
     }
 }

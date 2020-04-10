@@ -20,23 +20,23 @@ class FeaturedViewController: UIViewController {
         super.viewDidLoad()
         setUpNavigationBar()
         registerScrollable()
-        fetchMovies()
+        //fetchMovies()
     }
     
-    func fetchMovies() {
-        HomeService.sharedInstance.fetchHomeJson { (result) in
-            switch result {
-            case .success(let movies):
-                self.movieCategorized = movies
-                DispatchQueue.main.async {
-                    self.featureTableView.reloadData()
-                }
-                
-            case .failure(let error):
-                print("Fail to fetch Movies data", error)
-            }
-        }
-    }
+//    func fetchMovies() {
+//        HomeService.sharedInstance.fetchHomeJson { (result) in
+//            switch result {
+//            case .success(let movies):
+//                self.movieCategorized = movies
+//                DispatchQueue.main.async {
+//                    self.featureTableView.reloadData()
+//                }
+//
+//            case .failure(let error):
+//                print("Fail to fetch Movies data", error)
+//            }
+//        }
+//    }
     
     func registerScrollable() {
         let featuresTableViewCell = UINib(nibName: "FeaturesTableViewCell", bundle: nil)

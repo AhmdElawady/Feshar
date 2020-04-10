@@ -25,23 +25,23 @@ class HomeViewController: UIViewController {
         setUpNavigationBar()
         registerScrollable()
         setupSearchBar()
-        fetchMovies()
+        //fetchMovies()
     }
     
-    func fetchMovies() {
-        HomeService.sharedInstance.fetchHomeJson { (result) in
-            switch result {
-            case .success(let movies):
-                self.allMovies = movies
-                DispatchQueue.main.async {
-                    self.moviesTableView.reloadData()
-                }
-                
-            case .failure(let error):
-                print("Fail to fetch Movies data", error)
-            }
-        }
-    }
+//    func fetchMovies() {
+//        HomeService.sharedInstance.fetchHomeJson { (result) in
+//            switch result {
+//            case .success(let movies):
+//                self.allMovies = movies
+//                DispatchQueue.main.async {
+//                    self.moviesTableView.reloadData()
+//                }
+//
+//            case .failure(let error):
+//                print("Fail to fetch Movies data", error)
+//            }
+//        }
+//    }
     
     func registerScrollable() {
         let genereCellNib = UINib(nibName: "GenereViewCell", bundle: nil)
