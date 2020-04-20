@@ -45,28 +45,30 @@ class DetailsViewController: UIViewController {
     func setupDetailsVCContent() {
         DispatchQueue.main.async {
             self.movieNameLabel.text = self.movieDetails?.name
-            self.getGenreMovie()
             self.movieIMDBLabel.text = String(format: "%.1f", self.movieDetails?.IMDBRate ?? 0)
             self.describtionLabel.text = self.movieDetails?.Description
             self.updateCollectionPosters()
         }
+        self.getGenreMovie()
         fetchCast()
     }
     
     func getGenreMovie() {
-        var movieGenresName = [String]()
+        var movieGenresNames = [String]()
         GenresMovies.getGenresMovies { (genresResponse, error) in
             guard let movieGenresId = self.movieDetails?.genres else {return}
             for genreId in movieGenresId {
                 for genre in genresResponse {
                     if genre.id == genreId.id {
-                        movieGenresName.append(genre.name)
+                        movieGenresNames.append(genre.name)
                     }
                 }
             }
         }
-        let movieGenre = movieGenresName.joined(separator: " | ")
-        self.movieGenreLabel.text = movieGenre
+        DispatchQueue.main.async {
+            let movieGenre = movieGenresNames.joined(separator: " | ")
+            self.movieGenreLabel.text = movieGenre
+        }
     }
     
     func updateCollectionPosters() {
