@@ -11,7 +11,7 @@ import Foundation
 class Credit {
     
     class func getCast(movieId: Int, completion: @escaping ([Cast], Error?) -> Void) {
-        Client.Auth.parameter = String(movieId)
+        Client.Auth.parameter = movieId
         let task = URLSession.shared.dataTask(with: Client.EndPoints.getCredits.url) { (data, response, error) in
             guard let data = data else {
                 completion([], error)

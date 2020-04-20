@@ -16,7 +16,7 @@ class Client {
         static var accountId = 0
         static var requestToken = ""
         static var sessionId = ""
-        static var parameter = ""
+        static var parameter: Int?
     }
     
     enum EndPoints {
@@ -75,10 +75,10 @@ class Client {
                 EndPoints.baseUrl + "/genre/movie/list" + EndPoints.apiKeyParam
                 
             case .getDetails: return
-                EndPoints.baseUrl + "/movie/\(Auth.parameter)" + EndPoints.apiKeyParam
+                EndPoints.baseUrl + "/movie/\(Auth.parameter!)" + EndPoints.apiKeyParam
                 
             case .getCredits: return
-                EndPoints.baseUrl + "/movie/\(Auth.parameter)/credits" + EndPoints.apiKeyParam
+                EndPoints.baseUrl + "/movie/\(Auth.parameter!)/credits" + EndPoints.apiKeyParam
             case .getMovieDescover: return
                 EndPoints.baseUrl + "/discover/movie" + EndPoints.apiKeyParam
             case .getTVDiscover: return

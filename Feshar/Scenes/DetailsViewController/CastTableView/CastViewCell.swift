@@ -27,7 +27,8 @@ class CastViewCell: UITableViewCell {
     }
     
     func configImage(data: Cast) {
-        if let imageURL = URL(string: "http://image.tmdb.org/t/p/w300\(data.profilePic)") {
+        guard let posterPath = data.profilePic else { return }
+        if let imageURL = URL(string: "http://image.tmdb.org/t/p/w300\(posterPath)") {
             DispatchQueue.global().async {
                 let imageData = try? Data(contentsOf: imageURL)
                 if let data = imageData {
@@ -41,9 +42,8 @@ class CastViewCell: UITableViewCell {
     }
     
     func configData(data: Cast) {
-        actorName.text = data.name
-        character.text = data.character
-        configImage(data: data)
+        self.actorName.text = data.name
+        self.character.text = data.character
+        self.configImage(data: data)
     }
-    
 }

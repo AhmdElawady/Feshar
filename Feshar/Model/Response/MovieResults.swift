@@ -24,11 +24,13 @@ struct MovieResults: Codable {
 
 struct Movie: Codable {
     let id: Int
-    let name: String
+    let name: String?   // movie name for Home
     let mainPoster: String
     let IMDBRate: Double
     let Description: String
-    let genres: [Int]
+    let genresId: [Int]
+    let tvName: String?   // tv show name movie
+    var isWatchlisted: Bool?
     
     enum CodingKeys: String, CodingKey {
         case id = "id"
@@ -36,7 +38,9 @@ struct Movie: Codable {
         case mainPoster = "poster_path"
         case IMDBRate = "vote_average"
         case Description = "overview"
-        case genres = "genre_ids"
+        case genresId = "genre_ids"
+        case tvName = "name"
+        case isWatchlisted
     }
 }
 

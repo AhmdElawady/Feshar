@@ -12,6 +12,7 @@ class WatchlistViewController: UIViewController {
 
     @IBOutlet weak var watchlistTableView: UITableView!
     
+    var watchlisted = [Movie]()
     override func viewDidLoad() {
         super.viewDidLoad()
         setupBackButtonNavItem()
@@ -28,7 +29,7 @@ class WatchlistViewController: UIViewController {
     
     func fetchWatchList() {
         WatchList.getWatchList { (movie, error) in
-            MovieModel.watchList = movie
+            self.watchlisted = movie
             DispatchQueue.main.async {
                 self.watchlistTableView.reloadData()
             }
@@ -39,12 +40,12 @@ class WatchlistViewController: UIViewController {
 // MARK: Watchlist TableView Setup
 extension WatchlistViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        MovieModel.watchList.count
+        watchlisted.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "WatchlistViewCell", for: indexPath) as! WatchlistViewCell
-        cell.configCell(data: MovieModel.watchList[indexPath.row])
+        cell.configCell(data: watchlisted[indexPath.row])
         return cell
     }
     
@@ -54,14 +55,15 @@ extension WatchlistViewController: UITableViewDelegate, UITableViewDataSource {
     
     // Swipe To Delete Setup
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let movieId = MovieModel.watchList[indexPath.row].id  // <<<<<<<<< ADJUST
+        let movieId = watchlisted[indexPath.row].id  // <<<<<<<<< ADJUST
         let delete = UIContextualAction(style: .destructive, title: "Delete") { (action, sourceView, completionHandler) in
             AddWatchList.addToWatchlist(mediaId: movieId, isWatchlist: false) { (response, error) in
                 DispatchQueue.main.async {
-                    MovieModel.watchList.remove(at: indexPath.row)
+                    self.watchlisted.remove(at: indexPath.row)
                     self.watchlistTableView.deleteRows(at: [indexPath], with: .automatic)
                     tableView.reloadData()
                 }
+                self.watchlisted[indexPath.row].isWatchlisted = false
             }
             completionHandler(true)
         }

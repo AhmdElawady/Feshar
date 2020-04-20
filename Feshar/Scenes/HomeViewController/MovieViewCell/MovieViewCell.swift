@@ -55,7 +55,7 @@ class MovieViewCell: UITableViewCell {
     func getGenreMovie(data: Movie) {
         var movieGenresName = [String]()
         GenresMovies.getGenresMovies { (genresResponse, error) in
-            let movieGenresId = data.genres
+            let movieGenresId = data.genresId
             for genreId in movieGenresId {
                 for genre in genresResponse {
                     if genre.id == genreId {

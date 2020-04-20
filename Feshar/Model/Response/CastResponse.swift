@@ -18,7 +18,7 @@ struct Cast: Codable {
     let castId: Int
     let character: String
     let name: String
-    let profilePic: String
+    let profilePic: String?
     
     enum CodingKeys: String, CodingKey {
         case castId = "cast_id"

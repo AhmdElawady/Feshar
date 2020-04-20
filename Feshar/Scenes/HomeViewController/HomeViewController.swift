@@ -67,8 +67,7 @@ extension HomeViewController: UICollectionViewDelegate {
         selectedCell.genereTitleLabel.textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         
         filteredMovies = allMovies.filter { (movie) -> Bool in
-            movie.genres.contains(genres[indexPath.item].id)}
-        
+            movie.genresId.contains(genres[indexPath.item].id)}
         moviesTableView.reloadData()
     }
     
@@ -131,26 +130,32 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
 extension HomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let movieId = MovieModel.allMovies[indexPath.row].id
-        Details.getDetails(movieId: movieId) { (movie, error) in
-            DispatchQueue.main.async {
-                let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-                if let DetailsViewController = mainStoryboard.instantiateViewController(withIdentifier: "DetailsViewController") as? DetailsViewController {
-                    DetailsViewController.movie = movie
-                    DetailsViewController.modalPresentationStyle = .fullScreen
-                self.navigationController?.pushViewController(DetailsViewController, animated: true)
-                }
-            }
+//        let movieId = filteredMovies[indexPath.row].id
+//        Details.getDetails(movieId: movieId) { (movie, error) in
+//            DispatchQueue.main.async {
+//                let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+//                if let DetailsViewController = mainStoryboard.instantiateViewController(withIdentifier: "DetailsViewController") as? DetailsViewController {
+//                    DetailsViewController.movie = movie
+//                    DetailsViewController.modalPresentationStyle = .fullScreen
+//                self.navigationController?.pushViewController(DetailsViewController, animated: true)
+//                }
+//            }
+//        }
+        
+        let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        if let DetailsViewController = mainStoryboard.instantiateViewController(withIdentifier: "DetailsViewController") as? DetailsViewController {
+            DetailsViewController.movieId = filteredMovies[indexPath.row].id
+            DetailsViewController.modalPresentationStyle = .fullScreen
+            self.navigationController?.pushViewController(DetailsViewController, animated: true)
         }
     }
     
 //     Setup Trailing Swipe Action
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        var isWatchlisted = false
         let movieId = filteredMovies[indexPath.row].id
         let addWatchlist = UIContextualAction(style: .normal, title: "Add to\nwatchlist") { (action, sourceView, completionHandler) in
             AddWatchList.addToWatchlist(mediaId: movieId, isWatchlist: true) { (response, error) in
-                isWatchlisted = true
+                self.filteredMovies[indexPath.row].isWatchlisted = true
                 DispatchQueue.main.async {
                     tableView.reloadData()
                 }
@@ -158,8 +163,8 @@ extension HomeViewController: UITableViewDelegate {
             completionHandler(true)
         }
         
-        addWatchlist.image = isWatchlisted ? UIImage(systemName: "bookmark.fill") : UIImage(systemName: "bookmark")
-        addWatchlist.backgroundColor = isWatchlisted ? #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1) : #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+        addWatchlist.image = self.filteredMovies[indexPath.row].isWatchlisted ?? false ? UIImage(systemName: "bookmark.fill") : UIImage(systemName: "bookmark")
+        addWatchlist.backgroundColor = self.filteredMovies[indexPath.row].isWatchlisted ?? false ? #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1) : #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         
         let swipeActionConfig = UISwipeActionsConfiguration(actions: [addWatchlist])
         swipeActionConfig.performsFirstActionWithFullSwipe = false
@@ -170,7 +175,7 @@ extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let action = UIContextualAction(style: .normal, title: "Share") { (action, sourceView, completionHandler) in
             let item = MovieModel.allMovies[indexPath.row]
-            let items: [Any] = [item.name, item.mainPoster]
+            let items: [Any] = [item.name!, item.mainPoster]
             let activityViewController = UIActivityViewController(activityItems: items, applicationActivities: nil)
         self.present(activityViewController, animated: true)
         }
@@ -179,24 +184,6 @@ extension HomeViewController: UITableViewDelegate {
         let swipeActionConfig = UISwipeActionsConfiguration(actions: [action])
         swipeActionConfig.performsFirstActionWithFullSwipe = false
         return swipeActionConfig
-    }
-    
-    func SwipeToAddWatchList(movieId: Int, action: UIContextualAction) {
-        if MovieModel.watchList.contains(where: { $0.id == movieId }) {
-            AddWatchList.addToWatchlist(mediaId: movieId, isWatchlist: false) { (response, error) in
-                DispatchQueue.main.async {
-                    action.backgroundColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
-                    action.image = UIImage(systemName: "bookmark.fill")
-                }
-            }
-        } else {
-            AddWatchList.addToWatchlist(mediaId: movieId, isWatchlist: true) {(response, error) in
-                DispatchQueue.main.async {
-                    action.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-                    action.image = UIImage(systemName: "bookmark")
-                }
-            }
-        }
     }
 }
 
@@ -222,7 +209,7 @@ extension HomeViewController: UISearchBarDelegate {
             return
         }
         filteredMovies = allMovies.filter({ (movie) -> Bool in
-            movie.name.lowercased().contains(searchText.lowercased())
+            movie.name!.lowercased().contains(searchText.lowercased())
         })
         moviesTableView.reloadData()
     }

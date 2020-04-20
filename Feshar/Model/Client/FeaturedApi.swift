@@ -29,7 +29,7 @@ class FeaturedApi {
     }
     
     
-    class func getFeaturedTVShow(completion: @escaping ([TVShow], Error?) -> Void) {
+    class func getFeaturedTVShow(completion: @escaping ([Movie], Error?) -> Void) {
         let task = URLSession.shared.dataTask(with: Client.EndPoints.getTVDiscover.url) { (data, response, error) in
             guard let data = data else {
                 completion([], error)
@@ -37,7 +37,7 @@ class FeaturedApi {
             }
             do {
                 let decoder = JSONDecoder()
-                let responseObject = try decoder.decode(TVShowResults.self, from: data)
+                let responseObject = try decoder.decode(MovieResults.self, from: data)
                 completion(responseObject.results, nil)
             } catch {
                 completion([], error)

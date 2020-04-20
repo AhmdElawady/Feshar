@@ -15,7 +15,7 @@ class FeaturedViewController: UIViewController {
     
     var movieCategorized = [MovieModel]()
     var movies = [Movie]()
-    var tvShow = [TVShow]()
+    var tvShow = [Movie]()
     var categories = ["Movies", "TV Shows"]
     
     override func viewDidLoad() {
@@ -24,7 +24,6 @@ class FeaturedViewController: UIViewController {
         registerScrollable()
         fetchMovies()
         fetchTVShow()
-        print(tvShow)
     }
     
     func fetchMovies() {
@@ -56,12 +55,11 @@ extension FeaturedViewController: UITableViewDelegate, UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "FeaturesTableViewCell", for: indexPath) as! FeaturesTableViewCell
         
-        // Classify Movies By Genre
         cell.categoryTitle.text = categories[indexPath.row]
         if cell.categoryTitle.text == "Movies" {
             cell.fillCategorizedMovieCollectionView(with: movies)
         } else {
-//            cell.fillCategorizedMovieCollectionView(with: tvShow)
+            cell.fillCategorizedMovieCollectionView(with: tvShow)
         }
         
         return cell

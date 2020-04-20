@@ -11,7 +11,7 @@ import Foundation
 class Details {
     
     class func getDetails(movieId: Int, completion: @escaping (DetailsResponse?, Error?) -> Void) {
-        Client.Auth.parameter = String(movieId)
+        Client.Auth.parameter = movieId
         let task = URLSession.shared.dataTask(with: Client.EndPoints.getDetails.url) { (data, response, error) in
             guard let data = data else {
                 completion(nil, error)
