@@ -8,19 +8,35 @@
 
 import Foundation
 
-struct Movie: Codable {
+struct TVShowResults: Codable {
+    let page: Int
+    let results: [TVShow]
+    let totalPages: Int
+    let totalResults: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case page
+        case results
+        case totalPages = "total_pages"
+        case totalResults = "total_results"
+    }
+}
+
+struct TVShow: Codable {
     let id: Int
-    let name: String
+    let tvName: String
     let mainPoster: String
     let IMDBRate: Double
     let Description: String
+    let genres: [Int]
     
     enum CodingKeys: String, CodingKey {
         case id = "id"
-        case name = "title"
+        case tvName = "name"
         case mainPoster = "poster_path"
         case IMDBRate = "vote_average"
         case Description = "overview"
+        case genres = "genre_ids"
     }
 }
 

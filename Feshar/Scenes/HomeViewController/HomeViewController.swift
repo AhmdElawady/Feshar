@@ -10,53 +10,45 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
-    
     @IBOutlet weak var movieSearchBar: UISearchBar!
     @IBOutlet weak var genereCollectionView: UICollectionView!
     @IBOutlet weak var moviesTableView: UITableView!
     
-    var allMovies = [MovieModel]()
-//    var selectedMovies = [MovieModel]()
-    
-    var movieGenre = ["NEW", "TRENDING" ,"ACTION", "ROMANCE", "COMEDY"]
+    var allMovies = [Movie]()
+    var filteredMovies = [Movie]()
+    var genres = [Genre]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpNavigationBar()
         registerScrollable()
         setupSearchBar()
-        //fetchMovies()
+        fetchMovies()
+        fetchGenres()
     }
     
-//    func fetchMovies() {
-//        HomeService.sharedInstance.fetchHomeJson { (result) in
-//            switch result {
-//            case .success(let movies):
-//                self.allMovies = movies
-//                DispatchQueue.main.async {
-//                    self.moviesTableView.reloadData()
-//                }
-//
-//            case .failure(let error):
-//                print("Fail to fetch Movies data", error)
-//            }
-//        }
-//    }
+    func fetchMovies() {
+        Movies.getAllMovies { [weak self] (movie, error) in
+            self?.allMovies = movie
+            self?.filteredMovies = movie
+            MovieModel.allMovies = movie
+            DispatchQueue.main.async {
+                self?.moviesTableView.reloadData()
+            }
+        }
+    }
+    
+    func fetchGenres() {
+        GenresMovies.getGenresMovies { (genres, error) in
+            self.genres = genres
+        }
+    }
     
     func registerScrollable() {
         let genereCellNib = UINib(nibName: "GenereViewCell", bundle: nil)
         let movieCellNib = UINib(nibName: "MovieViewCell", bundle: nil)
         genereCollectionView.register(genereCellNib, forCellWithReuseIdentifier: "GenereViewCell")
         moviesTableView.register(movieCellNib, forCellReuseIdentifier: "MovieViewCell")
-    }
-    
-    func setupSelectedGenreCell(cell: UICollectionViewCell) {
-        cell.layer.backgroundColor = #colorLiteral(red: 0.8980392157, green: 0.2235294118, blue: 0.2078431373, alpha: 1)
-        cell.layer.shadowColor = #colorLiteral(red: 0.8980392157, green: 0.2235294118, blue: 0.2078431373, alpha: 1)
-        cell.layer.masksToBounds = false
-        cell.layer.shadowOffset = CGSize(width: 0, height: 8)
-        cell.layer.shadowRadius = 12
-        cell.layer.shadowOpacity = 0.4
     }
     
     func setupSearchBar() {
@@ -67,30 +59,38 @@ class HomeViewController: UIViewController {
 
 // MARK: Genre Delegates
 extension HomeViewController: UICollectionViewDelegate {
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedCell = genereCollectionView.cellForItem(at: indexPath) as! GenereViewCell
+        selectedCell.isSelected = true
         setupSelectedGenreCell(cell: selectedCell)
         selectedCell.genereTitleLabel.textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         
-//        switch selectedCell.genereTitleLabel.text {
-//        case "ACTION":
-//            selectedMovies = allMovies.filter({$0.genre?.components(separatedBy: " ").first == "Action"})
-//        case "COMEDY":
-//            selectedMovies = allMovies.filter({$0.genre?.components(separatedBy: " ").first == "Comedy"})
-//        case "ROMANCE":
-//            selectedMovies = allMovies.filter({$0.genre?.components(separatedBy: " ").first == "Romance"})
-//        default:
-//            selectedMovies = allMovies
-//        }
+        filteredMovies = allMovies.filter { (movie) -> Bool in
+            movie.genres.contains(genres[indexPath.item].id)}
+        
         moviesTableView.reloadData()
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        guard let selectedCell = genereCollectionView.cellForItem(at: indexPath) as? GenereViewCell else { return } // sometime crash on deselecting on cell "NEW" so i make it optional to prevent crashing
-        selectedCell.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-        selectedCell.layer.shadowColor = nil
-        selectedCell.genereTitleLabel.textColor = #colorLiteral(red: 0.1843137255, green: 0.1803921569, blue: 0.1803921569, alpha: 1)
-        selectedCell.layer.shadowOpacity = 0
+        guard let deSelectedCell = genereCollectionView.cellForItem(at: indexPath) as? GenereViewCell else { return }
+        setupDefaultGenreCell(cell: deSelectedCell)
+        deSelectedCell.isSelected = false
+        deSelectedCell.genereTitleLabel.textColor = #colorLiteral(red: 0.1843137255, green: 0.1803921569, blue: 0.1803921569, alpha: 1)
+    }
+    
+    func setupSelectedGenreCell(cell: UICollectionViewCell) {
+        cell.layer.backgroundColor = #colorLiteral(red: 0.8980392157, green: 0.2235294118, blue: 0.2078431373, alpha: 1)
+        cell.layer.shadowColor = #colorLiteral(red: 0.8980392157, green: 0.2235294118, blue: 0.2078431373, alpha: 1)
+        cell.layer.masksToBounds = false
+        cell.layer.shadowOffset = CGSize(width: 0, height: 8)
+        cell.layer.shadowOpacity = 0.4
+    }
+    
+    func setupDefaultGenreCell(cell: UICollectionViewCell) {
+        cell.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        cell.layer.shadowColor = nil
+        cell.layer.shadowOpacity = 0
     }
 }
 
@@ -98,13 +98,23 @@ extension HomeViewController: UICollectionViewDelegate {
 extension HomeViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        movieGenre.count // <<<<<< ADJUST for selectedGenre
+        genres.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GenereViewCell", for: indexPath) as! GenereViewCell
-        cell.genre = movieGenre[indexPath.item]  // <<<<<< ADJUST
-        cell.layer.cornerRadius = 10
+        
+        if cell.isSelected {
+            setupSelectedGenreCell(cell: cell)
+            cell.genereTitleLabel.textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        } else {
+            setupDefaultGenreCell(cell: cell)
+            cell.genereTitleLabel.textColor = #colorLiteral(red: 0.1843137255, green: 0.1803921569, blue: 0.1803921569, alpha: 1)
+        }
+        
+        cell.genre = genres[indexPath.item].name
+        cell.genreID = genres[indexPath.item].id
+        
         return cell
     }
 }
@@ -117,77 +127,106 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-
 // MARK: Home Delegates
 extension HomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-        if let DetailsViewController = mainStoryboard.instantiateViewController(withIdentifier: "DetailsViewController") as? DetailsViewController {
-            DetailsViewController.movie = allMovies[indexPath.row]  //  SELECTEDCELL
-            DetailsViewController.modalPresentationStyle = .fullScreen
-            self.navigationController?.pushViewController(DetailsViewController, animated: true)
+        let movieId = MovieModel.allMovies[indexPath.row].id
+        Details.getDetails(movieId: movieId) { (movie, error) in
+            DispatchQueue.main.async {
+                let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+                if let DetailsViewController = mainStoryboard.instantiateViewController(withIdentifier: "DetailsViewController") as? DetailsViewController {
+                    DetailsViewController.movie = movie
+                    DetailsViewController.modalPresentationStyle = .fullScreen
+                self.navigationController?.pushViewController(DetailsViewController, animated: true)
+                }
+            }
         }
     }
-    // <<<<<< ADJUST
-    // Setup Trailing Swipe Action
-//    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//        let movie = allMovies[indexPath.row]
-//        let favorite = UIContextualAction(style: .normal, title: "Favorie") { (action, sourceView, completionHandler) in
-//            if movie.isFavorite==false {movie.isFavorite=true} else{ movie.isFavorite = false}
-//            tableView.reloadData()
-//            completionHandler(true)
-//        }
-//        favorite.image = movie.isFavorite ? UIImage(systemName: "bookmark.fill") : UIImage(systemName: "bookmark")
-//        favorite.backgroundColor = movie.isFavorite ? #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1) : .clear
-//
-//        let swipeActionConfig = UISwipeActionsConfiguration(actions: [favorite])
-//        swipeActionConfig.performsFirstActionWithFullSwipe = false
-//        return swipeActionConfig
-//    }
+    
+//     Setup Trailing Swipe Action
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        var isWatchlisted = false
+        let movieId = filteredMovies[indexPath.row].id
+        let addWatchlist = UIContextualAction(style: .normal, title: "Add to\nwatchlist") { (action, sourceView, completionHandler) in
+            AddWatchList.addToWatchlist(mediaId: movieId, isWatchlist: true) { (response, error) in
+                isWatchlisted = true
+                DispatchQueue.main.async {
+                    tableView.reloadData()
+                }
+            }
+            completionHandler(true)
+        }
+        
+        addWatchlist.image = isWatchlisted ? UIImage(systemName: "bookmark.fill") : UIImage(systemName: "bookmark")
+        addWatchlist.backgroundColor = isWatchlisted ? #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1) : #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+        
+        let swipeActionConfig = UISwipeActionsConfiguration(actions: [addWatchlist])
+        swipeActionConfig.performsFirstActionWithFullSwipe = false
+        return swipeActionConfig
+    }
+    
     // Setup Leading Swipe Action
-//    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//        let action = UIContextualAction(style: .normal, title: "Share") { (action, sourceView, completionHandler) in
-//            let item = self.allMovies[indexPath.row]  // SELECTEDCell
-//            let items: [Any] = [item.name!, item.mainPoster!]
-//            let activityViewController = UIActivityViewController(activityItems: items, applicationActivities: nil)
-//        self.present(activityViewController, animated: true)
-//        }
-//        action.image = UIImage(systemName: "paperplane.fill")
-//        action.backgroundColor = .purple
-//        let swipeActionConfig = UISwipeActionsConfiguration(actions: [action])
-//        swipeActionConfig.performsFirstActionWithFullSwipe = false
-//        return swipeActionConfig
-//    }
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .normal, title: "Share") { (action, sourceView, completionHandler) in
+            let item = MovieModel.allMovies[indexPath.row]
+            let items: [Any] = [item.name, item.mainPoster]
+            let activityViewController = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        self.present(activityViewController, animated: true)
+        }
+        action.image = UIImage(systemName: "paperplane.fill")
+        action.backgroundColor = #colorLiteral(red: 0.4420216182, green: 0.641610953, blue: 0.4412724743, alpha: 1)
+        let swipeActionConfig = UISwipeActionsConfiguration(actions: [action])
+        swipeActionConfig.performsFirstActionWithFullSwipe = false
+        return swipeActionConfig
+    }
+    
+    func SwipeToAddWatchList(movieId: Int, action: UIContextualAction) {
+        if MovieModel.watchList.contains(where: { $0.id == movieId }) {
+            AddWatchList.addToWatchlist(mediaId: movieId, isWatchlist: false) { (response, error) in
+                DispatchQueue.main.async {
+                    action.backgroundColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
+                    action.image = UIImage(systemName: "bookmark.fill")
+                }
+            }
+        } else {
+            AddWatchList.addToWatchlist(mediaId: movieId, isWatchlist: true) {(response, error) in
+                DispatchQueue.main.async {
+                    action.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+                    action.image = UIImage(systemName: "bookmark")
+                }
+            }
+        }
+    }
 }
 
 // MARK: Home DataSource
 extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return allMovies.count  // SHOULD TAKES SELECTED MOVIES
+        return filteredMovies.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MovieViewCell", for: indexPath) as! MovieViewCell
-        cell.configData(data: allMovies[indexPath.row]) // SHOULD TAKES SELECTED MOVIES
+        cell.configData(data: filteredMovies[indexPath.row])
         return cell
     }
 }
 
 // MARK: SearchBar Delegate
-//extension HomeViewController: UISearchBarDelegate {
-//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        guard !searchText.isEmpty else {
-//            selectedMovies = allMovies
-//            moviesTableView.reloadData()
-//            return
-//        }
-//        selectedMovies = allMovies.filter({ (movie) -> Bool in
-//            movie.name!.lowercased().contains(searchText.lowercased())
-//        })
-//        moviesTableView.reloadData()
-//    }
-//}
+extension HomeViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard !searchText.isEmpty else {
+            filteredMovies = allMovies
+            moviesTableView.reloadData()
+            return
+        }
+        filteredMovies = allMovies.filter({ (movie) -> Bool in
+            movie.name.lowercased().contains(searchText.lowercased())
+        })
+        moviesTableView.reloadData()
+    }
+}
 
 extension HomeViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

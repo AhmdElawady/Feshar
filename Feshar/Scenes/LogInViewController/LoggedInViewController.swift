@@ -19,6 +19,8 @@ class LoggedInViewController: UIViewController {
         presentHomeVCAfterShortTime()
         setupAttrbutes()
         setupBackButtonNavItem()
+        navigationController?.navigationBar.backgroundColor = #colorLiteral(red: 0.9745692015, green: 0.9745692015, blue: 0.9745692015, alpha: 1)
+        navigationController?.navigationBar.isTranslucent = false
     }
     
     func setupAttrbutes() {

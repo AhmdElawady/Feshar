@@ -17,11 +17,12 @@ class LogInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpLoginVC()
-        
+        navigationController?.navigationBar.backgroundColor = #colorLiteral(red: 0.9745692015, green: 0.9745692015, blue: 0.9745692015, alpha: 1)
+        navigationController?.navigationBar.isTranslucent = false
     }
     
     @IBAction func loginButtonPressed(_ sender: Any) {
-//        loginValidation()
+        loginValidation()
         Token.getToken(completion: handleRequestTokenResponse(success:error:))
     }
     
@@ -53,22 +54,17 @@ class LogInViewController: UIViewController {
         }
     }
     
-//    func loginValidation()  {
-//        guard let username = usernameTextField.text else {return}
-//        guard let password = passwordTextField.text else {return}
-//        if username.isEmpty || password.isEmpty {
-//            ShowAlert.basic(title: "Incomplete Form", message: "Please fillout all fields", vc: self)
-//            return }
-//        if password.count < 8 {
-//            ShowAlert.basic(title: "Short Password", message: "Password should be at least 8 character", vc: self)
-//            passwordTextField.text = ""
-//            return }
-//        if username != staticUsername || password != staticPassword {
-//            ShowAlert.basic(title: "Unable To Login", message: "Incorrect Username or Password", vc: self)
-//            usernameTextField.text = ""
-//            passwordTextField.text = ""
-//            return }
-//    }
+    func loginValidation()  {
+        guard let username = usernameTextField.text else {return}
+        guard let password = passwordTextField.text else {return}
+        if username.isEmpty || password.isEmpty {
+            ShowAlert.basic(title: "Incomplete Form", message: "Please fillout all fields", vc: self)
+            return }
+        if password.count < 8 {
+            ShowAlert.basic(title: "Short Password", message: "Password should be at least 8 character", vc: self)
+            passwordTextField.text = ""
+            return }
+    }
     
     func setUpLoginVC() {
         logInButton.setupButtonView()

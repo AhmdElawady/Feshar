@@ -14,29 +14,31 @@ class FeaturedViewController: UIViewController {
     @IBOutlet weak var featureItemBar: UITabBarItem!
     
     var movieCategorized = [MovieModel]()
-    var movieGenres = ["NEW", "TRENDING" ,"ACTION", "ROMANCE", "COMEDY"]
+    var movies = [Movie]()
+    var tvShow = [TVShow]()
+    var categories = ["Movies", "TV Shows"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpNavigationBar()
         registerScrollable()
-        //fetchMovies()
+        fetchMovies()
+        fetchTVShow()
+        print(tvShow)
     }
     
-//    func fetchMovies() {
-//        HomeService.sharedInstance.fetchHomeJson { (result) in
-//            switch result {
-//            case .success(let movies):
-//                self.movieCategorized = movies
-//                DispatchQueue.main.async {
-//                    self.featureTableView.reloadData()
-//                }
-//
-//            case .failure(let error):
-//                print("Fail to fetch Movies data", error)
-//            }
-//        }
-//    }
+    func fetchMovies() {
+        FeaturedApi.getFeaturedMovie {(movies, error) in
+            self.movies = movies
+        }
+    }
+    
+    func fetchTVShow() {
+        FeaturedApi.getFeaturedTVShow { (TVShows, error) in
+            self.tvShow = TVShows
+        }
+    }
+    
     
     func registerScrollable() {
         let featuresTableViewCell = UINib(nibName: "FeaturesTableViewCell", bundle: nil)
@@ -47,26 +49,21 @@ class FeaturedViewController: UIViewController {
 // MARK: Featured TableView Setup
 extension FeaturedViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        movieGenres.count
+        categories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "FeaturesTableViewCell", for: indexPath) as! FeaturesTableViewCell
+        
         // Classify Movies By Genre
-        var genre = [MovieModel]()
-//        for movie in allMovies {
-//            if movie.genre?.components(separatedBy: " ").first?.uppercased() == movieGenres[indexPath.row] {
-//                genre.append(movie)
-//            }else if movieGenres[indexPath.row] == "TRENDING" {
-//                genre = allMovies
-//            }else if movieGenres[indexPath.row] == "NEW" {
-//                genre = allMovies
-//            }
-//        }
- //       movieCategorized = genre
-        cell.categoryTitle.text = movieGenres[indexPath.row]
-        cell.fillCategorizedMovieCollectionView(with: movieCategorized)
+        cell.categoryTitle.text = categories[indexPath.row]
+        if cell.categoryTitle.text == "Movies" {
+            cell.fillCategorizedMovieCollectionView(with: movies)
+        } else {
+//            cell.fillCategorizedMovieCollectionView(with: tvShow)
+        }
+        
         return cell
         
     }

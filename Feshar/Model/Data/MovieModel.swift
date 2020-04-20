@@ -8,9 +8,15 @@
 
 import Foundation
 
-struct MovieModel {
+struct MovieModel: Equatable {
     
     static var allMovies = [Movie]()
+    static var popular = [Movie]()
+    static var latest = [Movie]()
+    static var nowPlaying = [Movie]()
     static var watchList = [Movie]()
-    static var favorite = [Movie]()
+    static var action = [Movie]()
+    static var comedy = [Movie]()
+    static var romance = [Movie]()
+    static var cast = [Cast]()
 }

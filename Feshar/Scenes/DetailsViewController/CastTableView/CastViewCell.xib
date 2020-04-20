@@ -52,6 +52,8 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="actorImage" destination="DJx-Ah-gxr" id="Xmg-B9-Pn9"/>
+                <outlet property="actorName" destination="3Ps-NV-oUX" id="keV-19-7zJ"/>
+                <outlet property="character" destination="g8q-9B-79A" id="Xsn-4r-lOO"/>
                 <outlet property="contentBackgroundView" destination="H2p-sc-9uM" id="cT3-88-z9D"/>
             </connections>
             <point key="canvasLocation" x="87" y="-69"/>

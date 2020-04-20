@@ -26,8 +26,22 @@ class WatchlistViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
+    
+    
     func configCell(data: Movie) {
- //       moviePosterImage.image = data.mainPoster    //<<<<<<<< ADJUST
+        
+        if let imageURL = URL(string: "http://image.tmdb.org/t/p/w300\(data.mainPoster)") {
+            DispatchQueue.global().async {
+                let imageData = try? Data(contentsOf: imageURL)
+                if let data = imageData {
+                    let image = UIImage(data: data)
+                    DispatchQueue.main.async {
+                        self.moviePosterImage.image = image
+                    }
+                }
+            }
+        }
+        
         movieNameLabel.text = data.name
         movieIMDBRate.text = String(format: "%.1f", data.IMDBRate)
  //       movieGenreLabel.text = data.genre   //<<<<<<<<< ADJUST

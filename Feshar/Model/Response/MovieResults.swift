@@ -6,7 +6,7 @@
 //  Copyright © 2020 Awady. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 struct MovieResults: Codable {
     let page: Int
@@ -21,3 +21,22 @@ struct MovieResults: Codable {
         case totalResults = "total_results"
     }
 }
+
+struct Movie: Codable {
+    let id: Int
+    let name: String
+    let mainPoster: String
+    let IMDBRate: Double
+    let Description: String
+    let genres: [Int]
+    
+    enum CodingKeys: String, CodingKey {
+        case id = "id"
+        case name = "title"
+        case mainPoster = "poster_path"
+        case IMDBRate = "vote_average"
+        case Description = "overview"
+        case genres = "genre_ids"
+    }
+}
+

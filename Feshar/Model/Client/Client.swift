@@ -12,12 +12,11 @@ import Foundation
 class Client {
     
     static let apiKey = "ca063adfe4d92a9eeda6834fb090034c"
-    
     struct Auth {
         static var accountId = 0
         static var requestToken = ""
         static var sessionId = ""
-        static var page = 1
+        static var parameter = ""
     }
     
     enum EndPoints {
@@ -27,10 +26,18 @@ class Client {
         case getToken
         case login
         case getSessionId
-        case getHomeMovies
-        case getDetailsMovie
         case getWatchList
         case getFeaturedMovies
+        case getPopularMovies
+        case getLatestMovies
+        case getNowPlaying
+        case getAllMovies
+        case addToWatchList
+        case getGenres
+        case getDetails
+        case getCredits
+        case getMovieDescover
+        case getTVDiscover
         
         var stringValue: String {
             switch self {
@@ -43,17 +50,39 @@ class Client {
             case .getSessionId: return
                 EndPoints.baseUrl + "/authentication/session/new" + EndPoints.apiKeyParam
                 
-            case .getHomeMovies: return
-                EndPoints.baseUrl + "/account/\(Auth.accountId)/watchlist/movies" + EndPoints.apiKeyParam + "&session_id=\(Auth.sessionId)"
-                
-            case .getDetailsMovie: return
-                EndPoints.baseUrl + "/account/\(Auth.accountId)/watchlist/movies" + EndPoints.apiKeyParam + "&session_id=\(Auth.sessionId)"
-                
             case .getWatchList: return
-                EndPoints.baseUrl + "/account/\(Auth.accountId)/watchlist/movies" + EndPoints.apiKeyParam + "&session_id=\(Auth.sessionId)" + "&page=\(Auth.page)"
+                EndPoints.baseUrl + "/account/\(Auth.accountId)/watchlist/movies" + EndPoints.apiKeyParam + "&session_id=\(Auth.sessionId)"
                 
             case .getFeaturedMovies: return
                 EndPoints.baseUrl + "/account/\(Auth.accountId)/watchlist/movies" + EndPoints.apiKeyParam + "&session_id=\(Auth.sessionId)"
+                
+            case .getPopularMovies: return
+                EndPoints.baseUrl + "/movie/popular" + EndPoints.apiKeyParam
+                
+            case .getLatestMovies: return
+                EndPoints.baseUrl + "/movie/latest" + EndPoints.apiKeyParam
+                
+            case .getNowPlaying: return
+                EndPoints.baseUrl + "/movie/now_playing" + EndPoints.apiKeyParam
+                
+            case .getAllMovies: return
+                EndPoints.baseUrl + "/discover/movie" + EndPoints.apiKeyParam
+                
+            case .addToWatchList: return
+                EndPoints.baseUrl + "/account/\(Auth.accountId)/watchlist" + EndPoints.apiKeyParam + "&session_id=\(Auth.sessionId)"
+                
+            case .getGenres: return
+                EndPoints.baseUrl + "/genre/movie/list" + EndPoints.apiKeyParam
+                
+            case .getDetails: return
+                EndPoints.baseUrl + "/movie/\(Auth.parameter)" + EndPoints.apiKeyParam
+                
+            case .getCredits: return
+                EndPoints.baseUrl + "/movie/\(Auth.parameter)/credits" + EndPoints.apiKeyParam
+            case .getMovieDescover: return
+                EndPoints.baseUrl + "/discover/movie" + EndPoints.apiKeyParam
+            case .getTVDiscover: return
+                EndPoints.baseUrl + "/discover/tv" + EndPoints.apiKeyParam
             }
         }
         

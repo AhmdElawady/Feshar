@@ -35,7 +35,7 @@
             <connections>
                 <outlet property="genereTitleLabel" destination="S7U-Rs-2xZ" id="daY-69-TeO"/>
             </connections>
-            <point key="canvasLocation" x="-33" y="14"/>
+            <point key="canvasLocation" x="-142" y="-10"/>
         </collectionViewCell>
     </objects>
 </document>

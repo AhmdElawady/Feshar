@@ -17,7 +17,9 @@ class FeaturesTableViewCell: UITableViewCell {
     @IBOutlet weak var categoryTitle: UILabel!
     
     var cellCategoryTitle: String! { didSet {categoryTitle.text = cellCategoryTitle}}
-    var movies = [MovieModel]()
+    var data = [Movie]()
+    
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -31,8 +33,8 @@ class FeaturesTableViewCell: UITableViewCell {
         categorieMoviesCollectionView.register(featureCollectionCell, forCellWithReuseIdentifier: "FeatureCollectionCell")
     }
     
-    func fillCategorizedMovieCollectionView(with movies: [MovieModel]) {
-        self.movies = movies
+    func fillCategorizedMovieCollectionView(with data: [Movie]) {
+        self.data = data
         self.categorieMoviesCollectionView.reloadData()
     }
 }
@@ -40,24 +42,23 @@ class FeaturesTableViewCell: UITableViewCell {
 // MARK: Categorized Collection Setup
 extension FeaturesTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        movies.count
+        data.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FeatureCollectionCell", for: indexPath) as! FeatureCollectionCell
         
-//        if let imageURL = URL(string: BaseURLs.baseImageUrl+movies[indexPath.item].mainPoster!) {
-//            DispatchQueue.global().async {
-//                let imageData = try? Data(contentsOf: imageURL)
-//                if let data = imageData {
-//                    let image = UIImage(data: data)
-//                    DispatchQueue.main.async {
-//                        cell.moviePosterImage.image = image
-//                    }
-//                }
-//            }
-//        }
-//        cell.moviePosterImage.image = movies[indexPath.item].mainPoster
+        if let imageURL = URL(string: "http://image.tmdb.org/t/p/w300\(data[indexPath.item].mainPoster)") {
+            DispatchQueue.global().async {
+                let imageData = try? Data(contentsOf: imageURL)
+                if let data = imageData {
+                    let image = UIImage(data: data)
+                    DispatchQueue.main.async {
+                        cell.moviePosterImage.image = image
+                    }
+                }
+            }
+        }
         return cell
     }
     
