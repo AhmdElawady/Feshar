@@ -28,17 +28,14 @@ class CastViewCell: UITableViewCell {
     
     func configImage(data: Cast) {
         guard let posterPath = data.profilePic else { return }
-        if let imageURL = URL(string: "http://image.tmdb.org/t/p/w300\(posterPath)") {
-            DispatchQueue.global().async {
-                let imageData = try? Data(contentsOf: imageURL)
-                if let data = imageData {
-                    let image = UIImage(data: data)
-                    DispatchQueue.main.async {
-                        self.actorImage.image = image
-                    }
-                }
-            }
-        }
+        guard let imageURL = URL(string: "http://image.tmdb.org/t/p/w300\(posterPath)") else { return }
+        DispatchQueue.global().async {
+            let imageData = try? Data(contentsOf: imageURL)
+            guard let data = imageData else { return }
+            let image = UIImage(data: data)
+            DispatchQueue.main.async {
+                self.actorImage.image = image
+            }}
     }
     
     func configData(data: Cast) {

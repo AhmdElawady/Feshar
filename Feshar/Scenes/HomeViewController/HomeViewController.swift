@@ -34,13 +34,15 @@ class HomeViewController: UIViewController {
             MovieModel.allMovies = movie
             DispatchQueue.main.async {
                 self?.moviesTableView.reloadData()
-            }
-        }
+            }}
     }
-    
+        
     func fetchGenres() {
         GenresMovies.getGenresMovies { (genres, error) in
             self.genres = genres
+            DispatchQueue.main.async {
+                self.genereCollectionView.reloadData()
+            }
         }
     }
     
@@ -62,10 +64,8 @@ extension HomeViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedCell = genereCollectionView.cellForItem(at: indexPath) as! GenereViewCell
-        selectedCell.isSelected = true
         setupSelectedGenreCell(cell: selectedCell)
         selectedCell.genereTitleLabel.textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        
         filteredMovies = allMovies.filter { (movie) -> Bool in
             movie.genresId.contains(genres[indexPath.item].id)}
         moviesTableView.reloadData()
@@ -74,7 +74,6 @@ extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         guard let deSelectedCell = genereCollectionView.cellForItem(at: indexPath) as? GenereViewCell else { return }
         setupDefaultGenreCell(cell: deSelectedCell)
-        deSelectedCell.isSelected = false
         deSelectedCell.genereTitleLabel.textColor = #colorLiteral(red: 0.1843137255, green: 0.1803921569, blue: 0.1803921569, alpha: 1)
     }
     
@@ -130,18 +129,6 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
 extension HomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let movieId = filteredMovies[indexPath.row].id
-//        Details.getDetails(movieId: movieId) { (movie, error) in
-//            DispatchQueue.main.async {
-//                let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-//                if let DetailsViewController = mainStoryboard.instantiateViewController(withIdentifier: "DetailsViewController") as? DetailsViewController {
-//                    DetailsViewController.movie = movie
-//                    DetailsViewController.modalPresentationStyle = .fullScreen
-//                self.navigationController?.pushViewController(DetailsViewController, animated: true)
-//                }
-//            }
-//        }
-        
         let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
         if let DetailsViewController = mainStoryboard.instantiateViewController(withIdentifier: "DetailsViewController") as? DetailsViewController {
             DetailsViewController.movieId = filteredMovies[indexPath.row].id
@@ -158,8 +145,7 @@ extension HomeViewController: UITableViewDelegate {
                 self.filteredMovies[indexPath.row].isWatchlisted = true
                 DispatchQueue.main.async {
                     tableView.reloadData()
-                }
-            }
+                }}
             completionHandler(true)
         }
         

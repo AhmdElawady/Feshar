@@ -41,6 +41,7 @@ class FeaturesTableViewCell: UITableViewCell {
 
 // MARK: Categorized Collection Setup
 extension FeaturesTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         data.count
     }

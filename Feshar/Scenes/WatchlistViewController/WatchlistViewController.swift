@@ -32,9 +32,7 @@ class WatchlistViewController: UIViewController {
             self.watchlisted = movie
             DispatchQueue.main.async {
                 self.watchlistTableView.reloadData()
-            }
-        }
-    }
+            }}}
 }
 
 // MARK: Watchlist TableView Setup

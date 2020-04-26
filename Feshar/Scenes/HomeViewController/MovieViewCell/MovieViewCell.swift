@@ -17,7 +17,6 @@ class MovieViewCell: UITableViewCell {
     @IBOutlet weak var IMDBRateLabel: UILabel!
     @IBOutlet weak var describtionLabel: UILabel!
     
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         cellSetup()
@@ -32,24 +31,16 @@ class MovieViewCell: UITableViewCell {
         movieBackgroundView.layer.shadowRadius = 8
         movieBackgroundView.layer.shadowOpacity = 0.5
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-    }
     
     func getPosterMovie (data: Movie) {
-        if let imageURL = URL(string: "http://image.tmdb.org/t/p/w300\(data.mainPoster)") {
-            DispatchQueue.global().async {
-                let imageData = try? Data(contentsOf: imageURL)
-                if let data = imageData {
-                    let image = UIImage(data: data)
-                    DispatchQueue.main.async {
-                         self.moviePosterImage.image = image
-                    }
-                }
-            }
-        }
+        guard let imageURL = URL(string: "http://image.tmdb.org/t/p/w300\(data.mainPoster)") else { return }
+        DispatchQueue.global().async {
+            let imageData = try? Data(contentsOf: imageURL)
+            guard let data = imageData else { return }
+            let image = UIImage(data: data)
+            DispatchQueue.main.async {
+                self.moviePosterImage.image = image
+            }}
     }
     
     func getGenreMovie(data: Movie) {
@@ -60,10 +51,7 @@ class MovieViewCell: UITableViewCell {
                 for genre in genresResponse {
                     if genre.id == genreId {
                         movieGenresName.append(genre.name)
-                    }
-                }
-            }
-        }
+                    }}}}
         DispatchQueue.main.async {
             let movieGenre = movieGenresName.joined(separator: " | ")
             self.movieTypeLabel.text = movieGenre

@@ -30,15 +30,15 @@ class DetailsViewController: UIViewController {
         super.viewDidLoad()
         setUpNavigationBar()
         fetchDetailsMovie()
-        setupDetailsVCContent()
         registerScrollable()
         setupAddWatchlistBtn()
     }
     
 // MARK: Setup Details ViewController
     func fetchDetailsMovie() {
-        Details.getDetails(movieId: movieId) { (details, error) in
-            self.movieDetails = details
+        Details.getDetails(movieId: movieId) { [weak self] (details, error) in
+            self?.movieDetails = details
+            self?.setupDetailsVCContent()
         }
     }
     
@@ -57,14 +57,12 @@ class DetailsViewController: UIViewController {
         var movieGenresNames = [String]()
         GenresMovies.getGenresMovies { (genresResponse, error) in
             guard let movieGenresId = self.movieDetails?.genres else {return}
+            
             for genreId in movieGenresId {
                 for genre in genresResponse {
                     if genre.id == genreId.id {
                         movieGenresNames.append(genre.name)
-                    }
-                }
-            }
-        }
+                    }}}}
         DispatchQueue.main.async {
             let movieGenre = movieGenresNames.joined(separator: " | ")
             self.movieGenreLabel.text = movieGenre
@@ -73,18 +71,15 @@ class DetailsViewController: UIViewController {
     
     func updateCollectionPosters() {
         guard let posterPath = movieDetails?.mainPoster else { return }
-        if let imageURL = URL(string: "http://image.tmdb.org/t/p/w300\(posterPath)") {
-            DispatchQueue.global().async {
-                let imageData = try? Data(contentsOf: imageURL)
-                if let data = imageData {
-                    guard let image = UIImage(data: data) else { return }
-                    DispatchQueue.main.async {
-                        self.posters.append(image)
-                        self.posterimageCollectionView.reloadData()
-                    }
-                }
-            }
-        }
+        guard let imageURL = URL(string: "http://image.tmdb.org/t/p/w300\(posterPath)") else { return }
+        DispatchQueue.global().async {
+            let imageData = try? Data(contentsOf: imageURL)
+            guard let data = imageData else { return }
+            guard let image = UIImage(data: data) else { return }
+            DispatchQueue.main.async {
+                self.posters.append(image)
+                self.posterimageCollectionView.reloadData()
+            }}
     }
     
     func fetchCast() {
@@ -92,10 +87,8 @@ class DetailsViewController: UIViewController {
             self.cast = cast
             DispatchQueue.main.async {
                 self.castTableView.reloadData()
-            }
-        }
-    }
-    
+            }}}
+        
 // MARK: Setup Button attributes
     func setupAddWatchlistBtn() {
         addWishListButton.setupButtonView()
@@ -129,7 +122,6 @@ class DetailsViewController: UIViewController {
                     self.isWatchlisted = false
                 }
             }
-            
         }
     }
     
@@ -184,7 +176,6 @@ extension DetailsViewController: UICollectionViewDelegateFlowLayout {
 //        targetContentOffset.pointee = offset
 //    }
 }
-
 
 // MARK: TableView Setup
 extension DetailsViewController: UITableViewDelegate, UITableViewDataSource {

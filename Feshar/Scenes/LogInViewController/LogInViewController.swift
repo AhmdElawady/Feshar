@@ -42,16 +42,13 @@ class LogInViewController: UIViewController {
     
     func handleSessionResponse(success: Bool, error: Error?) {
         if success {
-            print(Client.Auth.sessionId)
             DispatchQueue.main.async {
                 let mainStoryboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-                if let welcomeScreen = mainStoryboard.instantiateViewController(withIdentifier: "LoggedInViewController") as? LoggedInViewController {
-                    welcomeScreen.username = self.usernameTextField.text!.capitalized
-                    welcomeScreen.modalTransitionStyle = .partialCurl
-                    self.navigationController?.pushViewController(welcomeScreen, animated: true)
-                }
-            }
-        }
+                guard let welcomeScreen = mainStoryboard.instantiateViewController(withIdentifier: "LoggedInViewController") as? LoggedInViewController else { return }
+                welcomeScreen.username = self.usernameTextField.text!.capitalized
+                welcomeScreen.modalTransitionStyle = .partialCurl
+                self.navigationController?.pushViewController(welcomeScreen, animated: true)
+            }}
     }
     
     func loginValidation()  {
@@ -68,7 +65,7 @@ class LogInViewController: UIViewController {
     
     func setUpLoginVC() {
         logInButton.setupButtonView()
-//         Setup Textfield Placeholder Attributes
+//:- Setup Textfield Placeholder Attributes
         usernameTextField.attributedPlaceholder = NSAttributedString(string: "Username", attributes: [ .font: UIFont(name: "Helvetica", size: 14)!, .foregroundColor: #colorLiteral(red: 0.3725490196, green: 0.3647058824, blue: 0.4392156863, alpha: 1)])
         passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [ .font: UIFont(name: "Helvetica", size: 14)!, .foregroundColor: #colorLiteral(red: 0.3725490196, green: 0.3647058824, blue: 0.4392156863, alpha: 1)])
     }

@@ -16,6 +16,7 @@ class FeaturedViewController: UIViewController {
     var movieCategorized = [MovieModel]()
     var movies = [Movie]()
     var tvShow = [Movie]()
+    
     var categories = ["Movies", "TV Shows"]
     
     override func viewDidLoad() {
@@ -27,17 +28,22 @@ class FeaturedViewController: UIViewController {
     }
     
     func fetchMovies() {
-        FeaturedApi.getFeaturedMovie {(movies, error) in
-            self.movies = movies
+        FeaturedApi.getFeaturedMovie { [weak self] (movies, error) in
+            self?.movies = movies
+            DispatchQueue.main.async {
+                self?.featureTableView.reloadData()
+            }
         }
     }
     
     func fetchTVShow() {
-        FeaturedApi.getFeaturedTVShow { (TVShows, error) in
-            self.tvShow = TVShows
+        FeaturedApi.getFeaturedTVShow { [weak self] (TVShows, error) in
+            self?.tvShow = TVShows
+            DispatchQueue.main.async {
+                self?.featureTableView.reloadData()
+            }
         }
     }
-    
     
     func registerScrollable() {
         let featuresTableViewCell = UINib(nibName: "FeaturesTableViewCell", bundle: nil)
@@ -56,14 +62,13 @@ extension FeaturedViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FeaturesTableViewCell", for: indexPath) as! FeaturesTableViewCell
         
         cell.categoryTitle.text = categories[indexPath.row]
+        
         if cell.categoryTitle.text == "Movies" {
             cell.fillCategorizedMovieCollectionView(with: movies)
-        } else {
+        } else if cell.categoryTitle.text == "TV Shows" {
             cell.fillCategorizedMovieCollectionView(with: tvShow)
         }
-        
         return cell
-        
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
